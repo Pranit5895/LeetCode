@@ -98,3 +98,50 @@ public:
         return ans;
     }
 };
+
+
+/**
+Approach 1: Brute Force
+**/
+
+/**
+Complexity Analysis
+Time complexity : O(n^2). 
+For each element, 
+we try to find its complement by looping through the rest of array which takes O(n) time. 
+Therefore, the time complexity is O(n^2).
+Space complexity : O(1). 
+**/
+
+/**
+Approach 2: Two-pass Hash Table
+build map and then check for each key whether its complement exists
+**/
+
+/**
+Complexity Analysis:
+Time complexity : O(n). 
+We traverse the list containing nn elements exactly twice. 
+Since the hash table reduces the look up time to O(1), the time complexity is O(n).
+Space complexity : O(n). 
+The extra space required depends on the number of items stored in the hash table, which stores exactly nn elements. 
+**/
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        map<int, int> ixs;
+        for(int i = 0; i < nums.size(); i++){
+            ixs[nums[i]] = i;
+        }
+        
+        for(int i = 0; i < nums.size(); i++){
+            int complement = target - nums[i];
+            if(ixs.find(complement) != ixs.end() && ixs[complement] != i){
+                return vector<int> {i, ixs[complement]};
+            }
+        }
+        
+        return vector<int> {};
+    }
+};
+
