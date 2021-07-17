@@ -100,3 +100,36 @@ public:
         return ans;
     }
 };
+
+//backtrack
+//Runtime: 4 ms, faster than 89.84% of C++ online submissions for Generate Parentheses.
+//Memory Usage: 11.6 MB, less than 92.56% of C++ online submissions for Generate Parentheses.
+//time: O(4^n/sqrt(n)), space: O(4^n/sqrt(n))
+class Solution {
+public:
+    void backtrack(string& comb, vector<string>& combs, int open, int close, int n){
+        if(comb.size() == n*2){
+            combs.push_back(comb);
+            return;
+        }
+        
+        if(open < n){
+            comb += '(';
+            backtrack(comb, combs, open+1, close, n);
+            comb.pop_back();
+        }
+        
+        if(close < open){
+            comb += ')';
+            backtrack(comb, combs, open, close+1, n);
+            comb.pop_back();
+        }
+    }
+    
+    vector<string> generateParenthesis(int n) {
+        string comb = "";
+        vector<string> combs;
+        backtrack(comb, combs, 0, 0, n);
+        return combs;
+    }
+};
