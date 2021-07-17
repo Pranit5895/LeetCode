@@ -70,3 +70,33 @@ public:
         return combs;
     }
 };
+
+//Approach 1: Brute Force, recursion
+//Runtime: 16 ms, faster than 15.92% of C++ online submissions for Generate Parentheses.
+//Memory Usage: 12.4 MB, less than 92.56% of C++ online submissions for Generate Parentheses.
+/*
+time: O(2^(2n)*n), space: O(2^(2n)*n)
+we may choose either ( or ) for a comb of size 2*n,
+so there are total 2^(2n) possibilities.
+And for each possibility, we need to spend O(n) time to check for its validity.
+*/
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        if(n == 0) return {""};
+        
+        vector<string> ans;
+        
+        for(int c = 0; c < n; c++){
+            vector<string> lefts = generateParenthesis(c);
+            vector<string> rights = generateParenthesis(n-1-c);
+            for(string& left : lefts){
+                for(string& right : rights){
+                    ans.push_back("(" + left + ")" + right);
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
