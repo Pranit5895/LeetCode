@@ -21,32 +21,40 @@
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-class Solution {
+class Solution
+{
 public:
-    ListNode* mergeKLists(vector<ListNode*>& lists) {
-        auto comp = [](const ListNode* a, const ListNode* b){
+    ListNode *mergeKLists(vector<ListNode *> &lists)
+    {
+        auto comp = [](const ListNode *a, const ListNode *b)
+        {
             return a->val > b->val;
         };
-        priority_queue<ListNode*, vector<ListNode*>, decltype(comp)> pq(comp);
-        
-        for(ListNode* node : lists){
-            if(node != nullptr) pq.push(node);
+        priority_queue<ListNode *, vector<ListNode *>, decltype(comp)> pq(comp);
+
+        for (ListNode *node : lists)
+        {
+            if (node != nullptr)
+                pq.push(node);
         }
-        
-        ListNode* head = new ListNode(-1);
-        ListNode* cur = head;
-        
-        while(!pq.empty()){
-            ListNode* node = pq.top(); pq.pop();
+
+        ListNode *head = new ListNode(-1);
+        ListNode *cur = head;
+
+        while (!pq.empty())
+        {
+            ListNode *node = pq.top();
+            pq.pop();
             cur->next = node;
             node = node->next;
             cur = cur->next;
             cur->next = nullptr;
-            if(node != nullptr){
+            if (node != nullptr)
+            {
                 pq.push(node);
             }
         }
-        
+
         return head->next;
     }
 };
@@ -56,27 +64,36 @@ public:
 //Runtime: 248 ms, faster than 14.96% of C++ online submissions for Merge k Sorted Lists.
 //Memory Usage: 12.1 MB, less than 61.91% of C++ online submissions for Merge k Sorted Lists.
 //time: O(KN), space: O(1)
-class Solution {
+class Solution
+{
 public:
-    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        if(l1 == nullptr) return l2;
-        if(l2 == nullptr) return l1;
-        if(l1->val <= l2->val){
+    ListNode *mergeTwoLists(ListNode *l1, ListNode *l2)
+    {
+        if (l1 == nullptr)
+            return l2;
+        if (l2 == nullptr)
+            return l1;
+        if (l1->val <= l2->val)
+        {
             l1->next = mergeTwoLists(l1->next, l2);
             return l1;
-        }else{
+        }
+        else
+        {
             l2->next = mergeTwoLists(l2->next, l1);
             return l2;
         }
     };
-    
-    ListNode* mergeKLists(vector<ListNode*>& lists) {
+
+    ListNode *mergeKLists(vector<ListNode *> &lists)
+    {
         ListNode *head = nullptr;
-        
-        for(int i = 0; i < lists.size(); ++i){
+
+        for (int i = 0; i < lists.size(); ++i)
+        {
             head = mergeTwoLists(head, lists[i]);
         }
-        
+
         return head;
     }
 };
@@ -85,26 +102,35 @@ public:
 //Runtime: 16 ms, faster than 99.77% of C++ online submissions for Merge k Sorted Lists.
 //Memory Usage: 12.3 MB, less than 40.56% of C++ online submissions for Merge k Sorted Lists.
 //time: O(NlogK), space: O(1)
-class Solution {
+class Solution
+{
 public:
-    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        if(l1 == nullptr) return l2;
-        if(l2 == nullptr) return l1;
-        if(l1->val <= l2->val){
+    ListNode *mergeTwoLists(ListNode *l1, ListNode *l2)
+    {
+        if (l1 == nullptr)
+            return l2;
+        if (l2 == nullptr)
+            return l1;
+        if (l1->val <= l2->val)
+        {
             l1->next = mergeTwoLists(l1->next, l2);
             return l1;
-        }else{
+        }
+        else
+        {
             l2->next = mergeTwoLists(l2->next, l1);
             return l2;
         }
     };
-    
-    ListNode* mergeKLists(vector<ListNode*>& lists) {
+
+    ListNode *mergeKLists(vector<ListNode *> &lists)
+    {
         int n = lists.size();
-        if(n == 0) return nullptr;
-        
+        if (n == 0)
+            return nullptr;
+
         int interval = 1;
-        
+
         /*
         divide and conquer
         l0, l1, l2, l3, l4, l5
@@ -112,13 +138,15 @@ public:
         -> new l0(l0+l2), l4
         -> new l0(l0+l4)
         */
-        while(interval < n){
-            for(int i = 0; i+interval < n; i += interval*2){
-                lists[i] = mergeTwoLists(lists[i], lists[i+interval]);
+        while (interval < n)
+        {
+            for (int i = 0; i + interval < n; i += interval * 2)
+            {
+                lists[i] = mergeTwoLists(lists[i], lists[i + interval]);
             }
             interval *= 2;
         }
-        
+
         return lists[0];
     }
 };
