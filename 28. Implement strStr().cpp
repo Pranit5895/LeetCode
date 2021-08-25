@@ -99,3 +99,104 @@ public:
         return -1;
     }
 };
+
+//KMP
+//https://leetcode.com/problems/implement-strstr/discuss/12956/C%2B%2B-Brute-Force-and-KMP
+//https://www.geeksforgeeks.org/kmp-algorithm-for-pattern-searching/
+//Runtime: 36 ms, faster than 20.93% of C++ online submissions for Implement strStr().
+//Memory Usage: 7 MB, less than 100.00% of C++ online submissions for Implement strStr().
+class Solution {
+public:
+    vector<int> computeLPSArray(string& pattern){
+        int n = pattern.size();
+        //longest proper prefix (also as proper suffix)'s length
+        vector<int> lps(n, 0);
+        
+        for(int i = 1, len = 0; i < n; /*no i++ here!*/){
+            if(pattern[i] == pattern[len]){
+                len++; //increase proper prefix's length
+                lps[i] = len; //record it into the table
+                i++; //move forward i
+            }else if(len > 0){
+                /*
+                fallback, we look up in lps to find a shorter prefix,
+                which has length lps[len-1](we name it as x).
+                From here, we know pattern[0:x-1] equals to pattern[i-x:i-1]
+                so we can start the comparison from lps[len-1](x).
+                */
+                len = lps[len-1];
+                //not increment i here!
+            }else{
+                //len = 0 now
+                lps[i] = len;
+                //we cannot fallback anymore, so we have nothing but to increase i
+                i++;
+            }
+        }
+        
+        return lps;
+    };
+    
+    int KMPSearch(string& text, string& pattern){
+        int m = text.size(), n = pattern.size();
+        if(n == 0) return 0;
+        vector<int> lps = computeLPSArray(pattern);
+        
+        // for(int i = 0; i < lps.size(); i++){
+        //     cout << lps[i];
+        // }
+        // cout << endl;
+        
+        for (int i = 0, j = 0; i < m;) {
+            cout << i << " " << j << endl;
+            if (text[i] == pattern[j]) { 
+                i++, j++;
+            }
+            //we have found pattern in text!
+            if (j == n) {
+                /*
+                if we want to find all "pattern" in text:
+                j = lps[j-1];
+                ans.push_back(i-j);
+                */
+                /*
+                i-1 is the end position of matching
+                recall that j servers as length of prefix, 
+                i-1 - (j-1) is the start of matching
+                */
+                return i - j;
+            }else if (i < m && text[i] != pattern[j]) {
+                //i < m: haven't look to the end of "text"
+                //text[i] != pattern[j]: need to change i or j
+                if(j > 0){
+                    //fallback
+                    /*
+                    we know that text[i-j...i-1] equlas to pattern[0...j-1],
+                    and assume lps[j-1] is x, so pattern[0...x-1] equals to pattern[j-x...j-1],
+                    text[i-x...i-1] = pattern[j-x...j-1] = pattern[0...x-1],
+                    so we can skip the comparison of text[i-x...i-1] and pattern[0...x-1],
+                    and start the next comparison from current i and next j = x
+                    */
+                    j = lps[j-1];
+                }else{
+                    /*
+                    j equals to 0 here, we cannot fallback, 
+                    so we have nothing but to increase i
+                    */
+                    /*
+                    in next iteration, 
+                    we match next char in text with the start of pattern
+                    */
+                    i++;
+                }
+            }
+        }
+        return -1;
+    }
+    
+    int strStr(string haystack, string needle) {
+        int m = haystack.size(), n = needle.size();
+        if(n == 0) return 0;
+        return KMPSearch(haystack, needle);
+    }
+};
